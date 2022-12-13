@@ -1,7 +1,10 @@
 package com.shaya.imagesearchapp.ui.gallery
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.shaya.imagesearchapp.R
@@ -36,6 +39,33 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
             //view of the fragment is destroyed and this happens only wehn the fragment instance is safe and still in memory.
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
+
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.menu_gallery, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(query != null){
+                    binding.recyclerView.scrollToPosition(0)  //straight jump
+                    viewModel.searchPhotos(query)
+                    searchView.clearFocus()//hide the keyboard when search button is clicked
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+
+        })
     }
 
     override fun onDestroy() {
