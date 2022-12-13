@@ -5,14 +5,18 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.shaya.imagesearchapp.R
+import com.shaya.imagesearchapp.data.UnsplashPhoto
 import com.shaya.imagesearchapp.databinding.FragmentGalleryBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GalleryFragment : Fragment(R.layout.fragment_gallery) {
+class GalleryFragment : Fragment(R.layout.fragment_gallery), UnsplashPhotoAdapter.OnItemClickListener {
 
     private val viewModel by viewModels<GalleryViewModel>()
 
@@ -25,13 +29,17 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
 
         _binding = FragmentGalleryBinding.bind(view)
 
-        val adapter = UnsplashPhotoAdapter()
+        val adapter = UnsplashPhotoAdapter(this)
         binding.apply {
             recyclerView.setHasFixedSize(true)
+            recyclerView.itemAnimator = null //remove the animation during new search
             recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
                 header = UnsplashPhotoLoadStateAdapter{ adapter.retry()},
                 footer = UnsplashPhotoLoadStateAdapter{ adapter.retry() },
             )
+            buttonRetry.setOnClickListener {
+                adapter.retry()
+            }
 
         }
 
@@ -40,7 +48,34 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
 
+         adapter.addLoadStateListener {loadState ->  //during new search
+             binding.apply {
+                 progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                 recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+                 buttonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                 textViewError.isVisible = loadState.source.refresh is LoadState.Error
+
+                //empty view
+                 if(loadState.source.refresh is LoadState.NotLoading &&
+                         loadState.append.endOfPaginationReached &&
+                         adapter.itemCount <1) {
+                     recyclerView.isVisible = false
+                     textViewEmpty.isVisible = true
+                 } else{
+                     textViewEmpty.isVisible = false
+
+                 }
+
+
+             }
+
+         }
         setHasOptionsMenu(true)
+    }
+
+    override fun onItemClick(photo: UnsplashPhoto) {
+        val action = GalleryFragmentDirections.actionGalleryFragmentToDetailsFragment(photo)
+        findNavController().navigate(action)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
