@@ -25,7 +25,11 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
         val adapter = UnsplashPhotoAdapter()
         binding.apply {
             recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter
+            recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = UnsplashPhotoLoadStateAdapter{ adapter.retry()},
+                footer = UnsplashPhotoLoadStateAdapter{ adapter.retry() },
+            )
+
         }
 
         viewModel.photos.observe(viewLifecycleOwner) {//lifecycle owner to the methods not the fragment itself because we want to stop updating ui when the
