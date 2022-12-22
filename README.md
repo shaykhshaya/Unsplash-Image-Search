@@ -35,7 +35,14 @@ The app, 'UNSPLASH' can search the Unsplash API for images and display them in R
 
 ## Screenshots
 
-![Home Screen](https://user-images.githubusercontent.com/119520622/207369425-682057f1-7e9f-4785-be4e-95f4a723dca2.png)
-![Search_screen](https://user-images.githubusercontent.com/119520622/207369450-cc1e6f6a-3f28-43a7-8fbd-2b6eaeeece7d.png)
-![Detail Screen](https://user-images.githubusercontent.com/119520622/207369464-f3fc0ea0-da20-4adc-b050-0f4488965462.png)
+
+![11](https://user-images.githubusercontent.com/119520622/209065300-affcdf0d-55b9-426b-ae09-2825db68167d.png)
+![22](https://user-images.githubusercontent.com/119520622/209065309-1b64f456-54ee-4d7c-8caa-09ae43a4b4c7.png)
+![33](https://user-images.githubusercontent.com/119520622/209065311-1a698323-295f-4686-8b66-71bfdcf42012.png)
+
+
+
+
+
+
 
